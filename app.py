@@ -5,6 +5,13 @@ from flask_expects_json import expects_json
 
 app = Flask(__name__)
 
+app_config = {
+	"host": 'mysqldb',
+	"database": 'apiflask',
+	"user": 'root',
+	"password": 'p@ss'
+}
+
 schema = {
     'type': 'object',
     'properties': {
@@ -17,10 +24,10 @@ schema = {
 
 def db_insert(f1, aut, des, num) -> int:
 	mydb = mysql.connector.connect(
-		host="mysqldb",
-		user="root",
-		password="p@ss",
-		database="apiflask" )
+		host = app_config["host"],
+		user = app_config["user"],
+		password = app_config["password"],
+		database = app_config["database"] )
 	cursor = mydb.cursor()
 	cursor.execute("INSERT INTO requests (field_1, author, description, my_numeric_field) VALUES (%s, %s, %s, %s)", (f1, aut, des, num))
 	mydb.commit()
@@ -60,10 +67,10 @@ def post_input(field):
 @app.route('/get_data/<int:id>')
 def get_data(id):
 	mydb = mysql.connector.connect(
-		host="mysqldb",
-		user="root",
-		password="p@ss",
-		database="apiflask" )
+		host = app_config["host"],
+		user = app_config["user"],
+		password = app_config["password"],
+		database = app_config["database"] )
 	cursor = mydb.cursor()
 
 	cursor.execute("SELECT * FROM requests WHERE id = %s", (id,))
@@ -78,20 +85,20 @@ def get_data(id):
 @app.route('/initdb')
 def db_init():
   mydb = mysql.connector.connect(
-    host="mysqldb",
-    user="root",
-    password="p@ss"
+    host = app_config["host"],
+    user = app_config["user"],
+    password = app_config["password"]
   )
   cursor = mydb.cursor()
-  cursor.execute("DROP DATABASE IF EXISTS apiflask")
-  cursor.execute("CREATE DATABASE apiflask")
+  cursor.execute("DROP DATABASE IF EXISTS " + app_config["database"])
+  cursor.execute("CREATE DATABASE " + app_config["database"])
   cursor.close()
 
   mydb = mysql.connector.connect(
-    host="mysqldb",
-    user="root",
-    password="p@ss",
-    database="apiflask"
+    host = app_config["host"],
+    user = app_config["user"],
+    password = app_config["password"],
+    database = app_config["database"]
   )
   cursor = mydb.cursor()
   cursor.execute("DROP TABLE IF EXISTS users")
