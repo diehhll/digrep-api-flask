@@ -1,6 +1,7 @@
+from functools import wraps
 import mysql.connector
 import json
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_expects_json import expects_json
 
 app = Flask(__name__)
@@ -29,6 +30,22 @@ schema = {
     }
 }
 
+# Authentication
+
+def check_auth(username, password):
+    return username == 'apiadmin' and password == 'p@ss'
+
+def login_required(f):
+	@wraps(f)
+	def decorated_function(*args, **kwargs):
+		auth = request.authorization
+		if not auth or not check_auth(auth.username, auth.password):
+			return jsonify({'message': 'Authentication required'}), 401
+		return f(*args, **kwargs)
+	return decorated_function
+
+# DB
+
 def db_insert(f1, aut, des, num) -> int:
 	mydb = mysql.connector.connect(
 		host = heroku_config["host"],
@@ -43,11 +60,14 @@ def db_insert(f1, aut, des, num) -> int:
 	cursor.close()
 	return id
 
+# Routes
+
 @app.route('/')
 def hello_world():
 	return 'Server is up =D'
 
 @app.route('/input/<string:field>', methods=['POST'])
+@login_required
 @expects_json(schema)
 def post_input(field):
 	valid_fields = ["field_1", "author", "description"]
@@ -72,6 +92,7 @@ def post_input(field):
 	return json.dumps(json_data)
 
 @app.route('/get_data/<int:id>')
+@login_required
 def get_data(id):
 	mydb = mysql.connector.connect(
 		host = heroku_config["host"],
@@ -90,6 +111,7 @@ def get_data(id):
 	return json.dumps(json_data)
 
 @app.route('/initdb')
+@login_required
 def db_init():
 	mydb = mysql.connector.connect(
 		host = heroku_config["host"],
