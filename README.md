@@ -8,6 +8,8 @@ https://pacific-hamlet-52301.herokuapp.com/
 
 ## API Reference
 
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/15284643-1760ff8e-ecbb-4722-9d30-5e8bdb7eac78?action=collection%2Ffork&collection-url=entityId%3D15284643-1760ff8e-ecbb-4722-9d30-5e8bdb7eac78%26entityType%3Dcollection%26workspaceId%3D75b966fd-d035-429a-ba09-f3392793f925)
+
 #### Cargar informacion
 
 ```http
