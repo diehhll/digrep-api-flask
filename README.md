@@ -1,12 +1,12 @@
 # Reputacion Digital
 
-### Entrevista Backend
+## Entrevista Backend
 
 Un microservicio REST-API desarrollado en Flask, y publicado en Heroku.
 
 https://pacific-hamlet-52301.herokuapp.com/
 
-### API Reference
+## API Reference
 
 #### Cargar informacion
 
@@ -28,7 +28,7 @@ El request devuelve el nro id del registro agregado.
 #### Buscar informacion
 
 ```http
-  GET /get_data/{id}
+GET /get_data/{id}
 ```
 
 | Parameter | Type     | Description                        |
@@ -37,6 +37,6 @@ El request devuelve el nro id del registro agregado.
 
 Si el id no se encuentra, devuelve una lista vacia.
 
-### Docker
+## Docker
 
 Tambien se encuentran los archivos `Dockerfile` y `docker-compose.yml` para ejecutar una version local, corriendo en containers.
