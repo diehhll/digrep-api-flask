@@ -5,11 +5,18 @@ from flask_expects_json import expects_json
 
 app = Flask(__name__)
 
-app_config = {
+docker_config = {
 	"host": 'mysqldb',
 	"database": 'apiflask',
 	"user": 'root',
 	"password": 'p@ss'
+}
+
+heroku_config = {
+	"host": 'us-cdbr-east-06.cleardb.net',
+	"database": 'heroku_c503db99b17ac2c',
+	"user": 'b6a1fac7c54c61',
+	"password": '7b1fd041'
 }
 
 schema = {
@@ -24,10 +31,10 @@ schema = {
 
 def db_insert(f1, aut, des, num) -> int:
 	mydb = mysql.connector.connect(
-		host = app_config["host"],
-		user = app_config["user"],
-		password = app_config["password"],
-		database = app_config["database"] )
+		host = heroku_config["host"],
+		user = heroku_config["user"],
+		password = heroku_config["password"],
+		database = heroku_config["database"] )
 	cursor = mydb.cursor()
 	cursor.execute("INSERT INTO requests (field_1, author, description, my_numeric_field) VALUES (%s, %s, %s, %s)", (f1, aut, des, num))
 	mydb.commit()
@@ -38,7 +45,7 @@ def db_insert(f1, aut, des, num) -> int:
 
 @app.route('/')
 def hello_world():
-  return 'Server is up =D'
+	return 'Server is up =D'
 
 @app.route('/input/<string:field>', methods=['POST'])
 @expects_json(schema)
@@ -67,10 +74,10 @@ def post_input(field):
 @app.route('/get_data/<int:id>')
 def get_data(id):
 	mydb = mysql.connector.connect(
-		host = app_config["host"],
-		user = app_config["user"],
-		password = app_config["password"],
-		database = app_config["database"] )
+		host = heroku_config["host"],
+		user = heroku_config["user"],
+		password = heroku_config["password"],
+		database = heroku_config["database"] )
 	cursor = mydb.cursor()
 
 	cursor.execute("SELECT * FROM requests WHERE id = %s", (id,))
@@ -84,39 +91,39 @@ def get_data(id):
 
 @app.route('/initdb')
 def db_init():
-  mydb = mysql.connector.connect(
-    host = app_config["host"],
-    user = app_config["user"],
-    password = app_config["password"]
-  )
-  cursor = mydb.cursor()
-  cursor.execute("DROP DATABASE IF EXISTS " + app_config["database"])
-  cursor.execute("CREATE DATABASE " + app_config["database"])
-  cursor.close()
+	mydb = mysql.connector.connect(
+		host = heroku_config["host"],
+		user = heroku_config["user"],
+		password = heroku_config["password"]
+	)
+	cursor = mydb.cursor()
+	cursor.execute("DROP DATABASE IF EXISTS " + heroku_config["database"])
+	cursor.execute("CREATE DATABASE " + heroku_config["database"])
+	cursor.close()
 
-  mydb = mysql.connector.connect(
-    host = app_config["host"],
-    user = app_config["user"],
-    password = app_config["password"],
-    database = app_config["database"]
-  )
-  cursor = mydb.cursor()
-  cursor.execute("DROP TABLE IF EXISTS users")
-  cursor.execute("CREATE TABLE users (name VARCHAR(255), password VARCHAR(255))")
-  cursor.execute("INSERT INTO users VALUES ('apiadmin', 'asdf')")
-  cursor.execute("DROP TABLE IF EXISTS requests")
-  cursor.execute("""CREATE TABLE requests (
+	mydb = mysql.connector.connect(
+		host = heroku_config["host"],
+		user = heroku_config["user"],
+		password = heroku_config["password"],
+		database = heroku_config["database"]
+	)
+	cursor = mydb.cursor()
+	cursor.execute("DROP TABLE IF EXISTS users")
+	cursor.execute("CREATE TABLE users (name VARCHAR(255), password VARCHAR(255))")
+	cursor.execute("INSERT INTO users VALUES ('apiadmin', 'asdf')")
+	cursor.execute("DROP TABLE IF EXISTS requests")
+	cursor.execute("""CREATE TABLE requests (
 						id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
 						field_1 VARCHAR(255),
 						author VARCHAR(255),
 						description VARCHAR(255),
 						my_numeric_field INT,
 						PRIMARY KEY (id)
-  )
-  """)
-  cursor.close()
+	)
+	""")
+	cursor.close()
 
-  return 'DB Initialized'
+	return 'DB Initialized'
 
 if __name__ == "__main__":
-  app.run(host ='0.0.0.0')
+	app.run(host ='0.0.0.0')

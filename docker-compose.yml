@@ -31,9 +31,12 @@ services:
   ports:
    - 5050:80
   environment:
-   PMA_HOST: mysqldb
-   PMA_USER: root
-   PMA_PASSWORD: p@ss
+   PMA_HOST: us-cdbr-east-06.cleardb.net
+   PMA_USER: b6a1fac7c54c61
+   PMA_PASSWORD: 7b1fd041
+  #  PMA_HOST: mysqldb
+  #  PMA_USER: root
+  #  PMA_PASSWORD: p@ss
 
 volumes:
   mysql:
