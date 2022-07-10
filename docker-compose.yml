@@ -1,23 +1,39 @@
 version: '3.8'
 
 services:
- web:
-  build:
-   context: .
-  ports:
-  - 8000:5000
-  volumes:
-  - ./:/app
-
  mysqldb:
   image: mysql
   ports:
-  - 3306:3306
+   - 3306:3306
   environment:
-  - MYSQL_ROOT_PASSWORD=p@ssw0rd1
+   - MYSQL_ROOT_PASSWORD=p@ss
   volumes:
-  - mysql:/var/lib/mysql
-  - mysql_config:/etc/mysql
+   - mysql:/var/lib/mysql
+   - mysql_config:/etc/mysql
+
+ web:
+  depends_on:
+   - mysqldb
+  build:
+   context: .
+  ports:
+   - 5000:5000
+  environment:
+   PYTHONUNBUFFERED: 1
+  volumes:
+   - ./:/app
+
+ phpmyadmin:
+  depends_on:
+   - mysqldb
+  image: phpmyadmin
+  restart: always
+  ports:
+   - 5050:80
+  environment:
+   PMA_HOST: mysqldb
+   PMA_USER: root
+   PMA_PASSWORD: p@ss
 
 volumes:
   mysql:
